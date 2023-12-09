@@ -3,7 +3,6 @@
 import json
 import models
 import os
-import datetime
 from models.base_model import BaseModel
 from models.user import User
 from models.state import State
@@ -40,7 +39,7 @@ class FileStorage:
             json.dump(data, fd)
 
     def objs_classes(self):
-	"""Returns classes dictionay"""
+        """Returns dictionary of classes"""
 	objs_classes = {
                 "BaseModel": BaseModel,
                 "User": User,

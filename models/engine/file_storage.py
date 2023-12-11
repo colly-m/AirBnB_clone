@@ -1,46 +1,45 @@
 #!/usr/bin/python3
-"""Module to define a class FileStorage"""
+"""Module for file storage class"""
+
+import os
 import json
 import models
-import os
-from models.base_model import BaseModel
-from models.user import User
-from models.state import State
-from models.amenity import Amenity
-from models.place import Place
-from models.city import City
-from models.review import Review
+import datetime
 
 
 class FileStorage:
-    """Defines a class FileStorage"""
-    __file__path = "file.json"
+    """Class for a File-storage"""
+    __file_path = "file.json"
     __objects = {}
 
     def all(self):
-        """Returns __objests in dictionary also accessing all stored objects"""
-        return (self.__objects)
+        """Returns __objects dictionary"""
+        return self.__objects
 
     def new(self, obj):
-        """Adds an object into a dictionary with <obj class name>.id key"""
-        obj_cls_name = obj.__class__.__name__
-
-        key = "{}.{}".format(obj_cls_name, obj.id)
-
-        FileStorage.__objects[key] = obj
+        """Sets new objects"""
+        key = "{}.{}".format(type(obj).__name__, obj.id)
+        self.__objects[key] = obj
 
     def save(self):
-        """
-        Serializes __objects dictionary to JSON format and saves to specified
-        __file_path
-        """
-        data = {key: obj.to_dict() for key, obj in FileStorage.__objects.items()}
-        with open(FileStorage.__file_path, 'w', encoding='utf-8') as fd:
-            json.dump(data, fd)
+        """Serialazes all files"""
+        objs = {}
+        for key, val in self.__objects.items():
+            objs[key] = val.to_dict()
+        with open(self.__file_path, 'w') as fd:
+            json.dump(objs, fd)
 
     def objs_classes(self):
         """Returns dictionary of classes"""
-	objs_classes = {
+        from models.base_model import BaseModel
+        from models.user import User
+        from models.state import State
+        from models.amenity import Amenity
+        from models.place import Place
+        from models.city import City
+        from models.review import Review
+
+        objs_classes = {
                 "BaseModel": BaseModel,
                 "User": User,
                 "State": State,
@@ -51,21 +50,16 @@ class FileStorage:
                 }
         return objs_classes
 
-
     def reload(self):
-        """
-        Reload the file and deserializes JSON into __objects
-        """
+        """Deserializes the JSON file to _objects"""
+        if not os.path.isfile(self.__file_path):
+            return
 
-        try:
-            with open(FileStorage.__file_path, encoding="utf-8") as fd:
-                FileStorage.__objects = json.load(fd)
-            for key, obj in FileStorage.__objects.items():
-                class_name = obj["__class__"]
-                class_name = models.classes[class_name]
-                FileStorage.__objects[key] = class_name(**value)
-        except FileNotFoundError:
-            pass
+        with open(self.__file_path, 'r') as fd:
+            obj_dict = json.load(fd)
+            obj_dict = {key: self.objs_classes()[val["__class__"]](**val)
+                        for key, val in obj_dict.items()}
+            self.__objects = obj_dict
 
     def attributes(self):
         """Returns the valid attributes and their types for classname."""

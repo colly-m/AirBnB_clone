@@ -1,9 +1,8 @@
 #!/usr/bin/python3
-"""Module for City class"""
+"""Module for State class"""
 from models.base_model import BaseModel
 
 
-class City(BaseModel):
-    """Class representing a city of BaseModule"""
-    state_id = ''
+class State(BaseModel):
+    """Class that represent a state in BaseModel"""
     name = ''

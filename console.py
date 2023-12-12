@@ -41,10 +41,10 @@ class HBNBCommand(cmd.Cmd):
         splitline = split(line)
         if not splitline:
             print("** class name missing **")
-        elif splitline[0] not in new_classes:
+        elif splitline[0] not in n_classes:
             print("** class doesn't exist **")
         else:
-            new_instance = new_classes[splitline[0]]()
+            new_instance = n_classes[splitline[0]]()
             print(new_instance.id)
             new_instance.save()
 
@@ -52,7 +52,7 @@ class HBNBCommand(cmd.Cmd):
         """Show command to show an instance based on class name and id"""
         if not line:
             print("** class name missing **")
-        elif line.split()[0] not in new_classes.keys():
+        elif line.split()[0] not in n_classes.keys():
             print("** class doesn't exist **")
         elif len(line.split()) < 2:
             print("** instance id missing **")
@@ -73,7 +73,7 @@ class HBNBCommand(cmd.Cmd):
             print("** class name missing **")
             return False
 
-        elif splitline[0] not in new_classes:
+        elif splitline[0] not in n_classes:
             print("** class doesn't exist **")
 
         elif len(splitline) < 2:
@@ -96,7 +96,7 @@ class HBNBCommand(cmd.Cmd):
                 str_list.append(str(new_instance))
         else:
             splitline = split(line)
-            if splitline[0] in new_classes:
+            if splitline[0] in n_classes:
                 for key, value in models.storage.all().items():
                     if value.__class__.__name__ == splitline[0]:
                         str_list.append(str(value))
